@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7efcebf4-442e-4927-84b3-b33579c472a9" name="Changes" comment="Added logic to read the csv files and populate the movies and users data sets">
+    <list default="true" id="7efcebf4-442e-4927-84b3-b33579c472a9" name="Changes" comment="Moved the database population logic to RecommendationEngine">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/RecommendationEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/RecommendationEngine.java" afterDir="false" />
     </list>
@@ -37,21 +37,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Tech lead's project/Store-manager",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;ChangesTree.GroupingKeys&quot;: [
-      &quot;directory&quot;,
-      &quot;module&quot;
+  "keyToStringList": {
+    "ChangesTree.GroupingKeys": [
+      "directory",
+      "module"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\All coding project\Uottawa\CSI 2520\Part1_OO\RecommendationEngineOO\src\main\resources" />
@@ -87,12 +88,20 @@
       <option name="project" value="LOCAL" />
       <updated>1736953063752</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Moved the database population logic to RecommendationEngine">
+      <created>1736970494324</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1736970494324</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="CSV files added to the new project" />
     <MESSAGE value="Added logic to read the csv files and populate the movies and users data sets" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added logic to read the csv files and populate the movies and users data sets" />
+    <MESSAGE value="Moved the database population logic to RecommendationEngine" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved the database population logic to RecommendationEngine" />
   </component>
 </project>
