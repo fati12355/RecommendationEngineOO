@@ -9,24 +9,14 @@ import java.util.ArrayList;
 
 // this is the class that will generate the recommendations for a user
 public class RecommendationEngine {
-	
-	public ArrayList<Movie> movies;
-	
-	// constructs a recommendation engine from files
-	public RecommendationEngine(String movieFile, String ratingsFile) throws IOException, 
-													NumberFormatException { // useless for me
-		
-		movies= new ArrayList<Movie>();
-		readMovies(movieFile);
-	}
-	
-	// Reads the Movie csv file of the MovieLens dataset
-	// It populates the list of Movies
-    public void readMovies(String csvFile) throws IOException,
-													NumberFormatException {
 
-        String line;
-        String delimiter = ","; // Assuming values are separated by commas
+	public ArrayList<Movie> moviesDatabase; //Create a database with all the movies
+
+	public void readMovies(String csvFile) throws IOException,
+			NumberFormatException {
+
+		String line;
+		String delimiter = ","; // Assuming values are separated by commas
 
 		BufferedReader br = new BufferedReader(new FileReader(csvFile));
 		// Read each line from the CSV file
@@ -52,18 +42,9 @@ public class RecommendationEngine {
 					title+= parts[i];
 			}
 
-			movies.add(new Movie(movieID,title));
+			moviesDatabase.add(new Movie(movieID,title));
 		}
 
-    }
-
-	public Movie getMovie(int index) {
-		return movies.get(index);
-	}
-
-	public int getNumberOfMovies() {
-
-		return movies.size();
 	}
 
 	public static void main(String[] args) {
@@ -73,12 +54,13 @@ public class RecommendationEngine {
 		//to modify
 		try {
 			//How to run the code: java RecommendationEngine 44 movies.csv ratings.csv
-			RecommendationEngine rec= new RecommendationEngine(args[1],args[2]);
-		
+			RecommendationEngine rec= new RecommendationEngine();
+			rec.readMovies(args[1]);
+
 		    // just printing few movies
 			for (int i=0; i<20; i++) {
 				
-				System.out.println(rec.getMovie(i).toString());
+				System.out.println(rec.moviesDatabase.get(i).getTitle().toString());
 			}
 			
         } catch (Exception e) {
