@@ -10,14 +10,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 // this is the class that will generate the recommendations for a user
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+
 public class RecommendationEngine {
 
-	public ArrayList<Movie> moviesDatabase; //Create a database with all the movies
+	// hey Gee Gee: Changed moviesDatabase from ArrayList to HashMap
+	public HashMap<Integer, Movie> moviesDatabase = new HashMap<>(); // Create a database with all the movies
 	// Create a HashMap to store users by their ID
 	Map<Integer, User> usersDatabase = new HashMap<>();
-	public void readMovies(String csvFile) throws IOException,
-			NumberFormatException {
 
+	public void readMovies(String csvFile) throws IOException, NumberFormatException {
 		String line;
 		String delimiter = ","; // Assuming values are separated by commas
 
@@ -31,28 +35,25 @@ public class RecommendationEngine {
 			String title;
 
 			// parse the ID
-			int movieID= Integer.parseInt(parts[0]);
+			int movieID = Integer.parseInt(parts[0]);
 
 			if (parts.length < 3)
 				throw new NumberFormatException("Error: Invalid line structure: " + line);
 
-			// we assume that the first part is the ID
-			// and the last one are genres, the rest is the title
-			title= parts[1];
+			// hey Gee Gee: Handle title extraction
+			// we assume that the first part is the ID and the last one are genres, the rest is the title
+			title = parts[1];
 			if (parts.length > 3) {
-
-				for (int i=2; i<parts.length-1; i++)
-					title+= parts[i];
+				for (int i = 2; i < parts.length - 1; i++)
+					title += parts[i];
 			}
 
-			moviesDatabase.add(new Movie(movieID,title));
-
+			// hey Gee Gee: Add the movie to the HashMap
+			moviesDatabase.put(movieID, new Movie(movieID, title));
 		}
-
 	}
-	public void readRatings(String csvFile) throws IOException,
-			NumberFormatException {
 
+	public void readRatings(String csvFile) throws IOException, NumberFormatException {
 		String line;
 		String delimiter = ","; // Assuming values are separated by commas
 
@@ -65,85 +66,84 @@ public class RecommendationEngine {
 			String[] parts = line.split(delimiter);
 
 			if (parts.length < 4)
-				throw new NumberFormatException("Error: Invalid line structure: " + line);// Each line
-			// should at least have the user and movie IDs, the rating and a timestamp
+				throw new NumberFormatException("Error: Invalid line structure: " + line);
 
-			int currentUserID = Integer.parseInt(parts[0]); //ID of the user doing the rating
+			int currentUserID = Integer.parseInt(parts[0]); // ID of the user doing the rating
 			int movieID = Integer.parseInt(parts[1]); // ID of the movie being rated
 			Double rating = Double.parseDouble(parts[3]); // the rating score
-			ArrayList<Integer> likedMovies = new ArrayList<>(); // a list of all liked movies
-			ArrayList<Integer> unlikedMovies = new ArrayList<>(); // a list of all unliked movies
+			HashMap<Integer, Movie> likedMovies = new HashMap<>(); // hey Gee Gee: Changed to HashMap
+			HashMap<Integer, Movie> unlikedMovies = new HashMap<>(); // hey Gee Gee: Changed to HashMap
 			Double R = 3.5;
-			if (rating >= R) { // A rating should be higher than 3.5 to be considered a like
-				likedMovies.add(movieID);
-			}else{
-				unlikedMovies.add(movieID);
-			}
-			User currentUser = new User(currentUserID,likedMovies,unlikedMovies);
-			usersDatabase.put(currentUserID,currentUser); // Add the user in the database
 
-			//Add logic to populate the ratings for all movies
-			Movie movieToSetRatingFor; // Temporary container
+			// hey Gee Gee: Check if the rating qualifies as a like
+			if (rating >= R) {
+				// hey Gee Gee: Add the movie to likedMovies using HashMap
+				if (moviesDatabase.containsKey(movieID)) {
+					likedMovies.put(movieID, moviesDatabase.get(movieID));
+					moviesDatabase.get(movieID).incrementLikes(); // Increment likes for the movie
+				}
+			} else {
+				// hey Gee Gee: Add the movie to unlikedMovies using HashMap
+				if (moviesDatabase.containsKey(movieID)) {
+					unlikedMovies.put(movieID, moviesDatabase.get(movieID));
+				}
+			}
+
+			// hey Gee Gee: Update User class to use HashMap for likedMovies and unlikedMovies
+			User currentUser = new User(currentUserID, likedMovies, unlikedMovies);
+			usersDatabase.put(currentUserID, currentUser); // Add the user in the database
+
+			// Add logic to populate the ratings for all movies
 			HashMap<Integer, Double> ratingAndViewer = new HashMap<>();
 			ratingAndViewer.put(currentUserID, rating);
-			for ( int m =0; m < moviesDatabase.size(); m++){
-				movieToSetRatingFor = moviesDatabase.get(m);
-				if (movieToSetRatingFor.getMovieID() == movieID){
-					moviesDatabase.get(m).getViewersAndRatings().add(ratingAndViewer);
-					break;
-				}
+
+			// hey Gee Gee: Access the movie directly using the HashMap
+			if (moviesDatabase.containsKey(movieID)) {
+				moviesDatabase.get(movieID).getViewersAndRatings().add(ratingAndViewer);
 			}
 		}
 	}
 
-	//comment this part before test
-	public void findRecommendations(int targetUserID){ // the algorithm to find movies to recommend
-		//Get the list of seen movies for this user (liked and unliked movies)
-		ArrayList <Movie> seenMovies = usersDatabase.get(targetUserID).getLikedMovies();
-		ArrayList <Movie> unLikedMoviesToAdd = usersDatabase.get(targetUserID).getUnlikedMovies();
-		Movie dBsMovie; // temporary variable
+	// comment this part before test
+	public void findRecommendations(int targetUserID) {
+		// the algorithm to find movies to recommend
+
+		HashMap<Integer, Movie> seenMovies = usersDatabase.get(targetUserID).getLikedMovies(); // hey Gee Gee: Updated to HashMap
+		HashMap<Integer, Movie> unLikedMoviesToAdd = usersDatabase.get(targetUserID).getUnlikedMovies(); // hey Gee Gee: Updated to HashMap
+		Movie dBsMovie;
 		int K = 10; // A movie should have been viewed by at least K users to be used for recommendation
 
-		for (int i=0; i< unLikedMoviesToAdd.size() ; i++ ){ // Combine the unliked movies to the liked one
-			seenMovies.add(unLikedMoviesToAdd.get(i));
+		// hey Gee Gee: Add all unliked movies to seenMovies
+		for (Map.Entry<Integer, Movie> entry : unLikedMoviesToAdd.entrySet()) {
+			seenMovies.put(entry.getKey(), entry.getValue());
 		}
-		for (int j = 0; j < moviesDatabase.size(); j++ ){ //for movies in the dataset
-			dBsMovie = moviesDatabase.get(j);
-			for ( int k = 0; k < seenMovies.size(); k++){
-				Movie currentMovie = seenMovies.get(k); // read the movies seen by the user one by one
-				if (currentMovie.getMovieID() == dBsMovie.getMovieID()){ //the user already saw the movie
-					break;
-				}else { // the user has not seen the movie yet. It may be recommended.
-					//check if the movie has been viewed by at least K users
 
-				}
+		boolean found; // variable to check if a user has seen a specific movie
 
-				}
+		// hey Gee Gee: Iterate over the HashMap values instead of an ArrayList
+		for (Movie movie : moviesDatabase.values()) {
+			found = seenMovies.containsKey(movie.getMovieID()); // hey Gee Gee: Check if the movie is in seenMovies
+			if (!found) { // the user has not seen the movie yet. It may be recommended.
+				// hey Gee Gee: Logic to check if the movie has been liked by at least K users to be added
 			}
-
+		}
 	}
-	//end of part to comment
-
-
+	// end of part to comment
 
 	public static void main(String[] args) {
-
-		//Need to call the functions to read the movies and rating files here
-		
-		//to modify
 		try {
-			//How to run the code: java RecommendationEngine 44 movies.csv ratings.csv
-			RecommendationEngine rec= new RecommendationEngine();
+			RecommendationEngine rec = new RecommendationEngine();
 			rec.readMovies(args[1]);
 
-		    // just printing few movies
-			for (int i=0; i<20; i++) {
-				
-				System.out.println(rec.moviesDatabase.get(i).getTitle().toString());
+			// hey Gee Gee: Access movies from the HashMap for testing
+			int counter = 0;
+			for (Movie movie : rec.moviesDatabase.values()) {
+				System.out.println(movie.getTitle());
+				if (++counter >= 20) break; // Limit to 20 movies
 			}
-			
-        } catch (Exception e) {
-            System.err.println("Error reading the file: " + e.getMessage());
-        }
+		} catch (Exception e) {
+			System.err.println("Error reading the file: " + e.getMessage());
+		}
 	}
 }
+
