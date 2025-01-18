@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7efcebf4-442e-4927-84b3-b33579c472a9" name="Changes" comment="Added the viewers and their rating for each movies in the database">
+    <list default="true" id="7efcebf4-442e-4927-84b3-b33579c472a9" name="Changes" comment="Changed all the arrayList to hashmap to increase efficiency and simplify search in the database">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/RecommendationEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/RecommendationEngine.java" afterDir="false" />
     </list>
@@ -102,7 +102,14 @@
       <option name="project" value="LOCAL" />
       <updated>1736978148374</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Changed all the arrayList to hashmap to increase efficiency and simplify search in the database">
+      <created>1737212072533</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1737212072533</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -110,6 +117,7 @@
     <MESSAGE value="Added logic to read the csv files and populate the movies and users data sets" />
     <MESSAGE value="Moved the database population logic to RecommendationEngine" />
     <MESSAGE value="Added the viewers and their rating for each movies in the database" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the viewers and their rating for each movies in the database" />
+    <MESSAGE value="Changed all the arrayList to hashmap to increase efficiency and simplify search in the database" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed all the arrayList to hashmap to increase efficiency and simplify search in the database" />
   </component>
 </project>

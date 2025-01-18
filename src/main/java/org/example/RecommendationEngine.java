@@ -108,8 +108,9 @@ public class RecommendationEngine {
 	public void findRecommendations(int targetUserID) {
 		// the algorithm to find movies to recommend
 
-		HashMap<Integer, Movie> seenMovies = usersDatabase.get(targetUserID).getLikedMovies(); // hey Gee Gee: Updated to HashMap
-		HashMap<Integer, Movie> unLikedMoviesToAdd = usersDatabase.get(targetUserID).getUnlikedMovies(); // hey Gee Gee: Updated to HashMap
+		User U = usersDatabase.get(targetUserID);
+		HashMap<Integer, Movie> seenMovies = U.getLikedMovies(); // hey Gee Gee: Updated to HashMap
+		HashMap<Integer, Movie> unLikedMoviesToAdd = U.getUnlikedMovies(); // hey Gee Gee: Updated to HashMap
 		Movie dBsMovie;
 		int K = 10; // A movie should have been viewed by at least K users to be used for recommendation
 
@@ -119,14 +120,62 @@ public class RecommendationEngine {
 		}
 
 		boolean found; // variable to check if a user has seen a specific movie
+		float scoreOfUforM =0 ; // "probability" that U will like M
+		int LofM = 0; //Number of user that liked the movie and that we used to compute the score
+		float sOfUandV = 0; // the score of U and V (the level at which they have similar tastes)
+		int commonLikedMovies;
+		int commonUnlikedMovies;
+		int bothSeenMovies;
+		int movie_ID;
+		float probability;
 
 		// hey Gee Gee: Iterate over the HashMap values instead of an ArrayList
 		for (Movie movie : moviesDatabase.values()) {
-			found = seenMovies.containsKey(movie.getMovieID()); // hey Gee Gee: Check if the movie is in seenMovies
+			movie_ID = movie.getMovieID();
+			found = seenMovies.containsKey(movie_ID); // hey Gee Gee: Check if the movie is in seenMovies
 			if (!found) { // the user has not seen the movie yet. It may be recommended.
 				// hey Gee Gee: Logic to check if the movie has been liked by at least K users to be added
+				if (movie.getNumberOfLikes() > K){
+					scoreOfUforM = 0;
+					LofM = 0;
+					for (User V: usersDatabase.values()){
+						commonLikedMovies = 0;
+						commonUnlikedMovies = 0;
+						bothSeenMovies = 0;
+						if (V.getUserID() != targetUserID && V.getLikedMovies().containsKey(movie_ID)){
+							sOfUandV = 0;// Compute the score of U with V. You might want to use loops.
+							for (Movie U_Liked : U.getLikedMovies().values()){ // Compute the number of movies they both liked
+								if (V.getLikedMovies().containsKey(U_Liked.getMovieID())){
+									commonLikedMovies++;
+								}
+							}
+							for (Movie U_Unliked : U.getUnlikedMovies().values()){ // Compute the number of movies they both disliked
+								if (V.getUnlikedMovies().containsKey(U_Unliked.getMovieID())){
+									commonUnlikedMovies++;
+								}
+							}
+							bothSeenMovies = seenMovies.size();
+							for (Movie V_slikedMovie : V.getLikedMovies().values()){//Complete the union with the movies V saw and not U (those V liked for now)
+								if (! seenMovies.containsKey(V_slikedMovie.getMovieID())){
+									bothSeenMovies++;
+								}
+							}
+							for (Movie V_sUnlikedMovie : V.getUnlikedMovies().values()){//Complete the union with the movies V saw and not U (those V liked for now)
+								if (! seenMovies.containsKey(V_sUnlikedMovie.getMovieID())){
+									bothSeenMovies++;
+								}
+							}
+							sOfUandV= (commonLikedMovies + commonUnlikedMovies) / bothSeenMovies;
+							scoreOfUforM += sOfUandV;
+						}
+						scoreOfUforM += sOfUandV; //Update the probability for U to like movie M
+						LofM++;// Take into account the number of users used for better approximation
+					}
+				}
 			}
 		}
+		probability = scoreOfUforM / LofM;
+		// store all probabilities with their movie ID and title to later sort and maintain the first N
 	}
 	// end of part to comment
 
