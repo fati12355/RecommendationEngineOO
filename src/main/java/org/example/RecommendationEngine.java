@@ -9,10 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 // this is the class that will generate the recommendations for a user
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RecommendationEngine {
 
