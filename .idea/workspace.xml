@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7efcebf4-442e-4927-84b3-b33579c472a9" name="Changes" comment="Added the complete logic to compute the probability for each movie to be liked by user U">
+    <list default="true" id="7efcebf4-442e-4927-84b3-b33579c472a9" name="Changes" comment="Problem finding movie class">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/RecommendationEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/RecommendationEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/RecommendationEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RecommendationEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/README.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/links.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/links.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/movies.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/movies.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/ratings.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/ratings.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/tags.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/tags.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,25 +42,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Tech lead's project/Store-manager",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Tech lead's project/Store-manager&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   },
-  "keyToStringList": {
-    "ChangesTree.GroupingKeys": [
-      "directory",
-      "module"
+  &quot;keyToStringList&quot;: {
+    &quot;ChangesTree.GroupingKeys&quot;: [
+      &quot;directory&quot;,
+      &quot;module&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\All coding project\Uottawa\CSI 2520\Part1_OO\RecommendationEngineOO\src\main\java" />
       <recent name="C:\All coding project\Uottawa\CSI 2520\Part1_OO\RecommendationEngineOO\src\main\resources" />
     </key>
   </component>
@@ -117,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1737232375536</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Problem finding movie class">
+      <created>1737694909767</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737694909767</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -127,6 +140,7 @@
     <MESSAGE value="Added the viewers and their rating for each movies in the database" />
     <MESSAGE value="Changed all the arrayList to hashmap to increase efficiency and simplify search in the database" />
     <MESSAGE value="Added the complete logic to compute the probability for each movie to be liked by user U" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the complete logic to compute the probability for each movie to be liked by user U" />
+    <MESSAGE value="Problem finding movie class" />
+    <option name="LAST_COMMIT_MESSAGE" value="Problem finding movie class" />
   </component>
 </project>

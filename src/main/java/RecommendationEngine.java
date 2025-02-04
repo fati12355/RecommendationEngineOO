@@ -2,13 +2,9 @@
 // Winter 2025
 // Robert Laganiere, uottawa.ca
 
-package org.example;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.*;
 
 
 // this is the class that will generate the recommendations for a user
@@ -19,6 +15,7 @@ public class RecommendationEngine {
 	public HashMap<Integer, Movie> moviesDatabase = new HashMap<>(); // Create a database with all the movies
 	// Create a HashMap to store users by their ID
 	Map<Integer, User> usersDatabase = new HashMap<>();
+	TreeMap <Double, Movie> MScoresForU = new TreeMap<>(Comparator.reverseOrder()) ; // store the score each movie get for the user U to later sort and recommend the top 20
 
 	public void readMovies(String csvFile) throws IOException, NumberFormatException {
 		String line;
@@ -52,6 +49,7 @@ public class RecommendationEngine {
 		}
 	}
 
+	//this function  has to be rewritten. Check if the user exist and add liked or unliked movie
 	public void readRatings(String csvFile) throws IOException, NumberFormatException {
 		String line;
 		String delimiter = ","; // Assuming values are separated by commas
@@ -67,8 +65,8 @@ public class RecommendationEngine {
 			if (parts.length < 4)
 				throw new NumberFormatException("Error: Invalid line structure: " + line);
 
-			int currentUserID = Integer.parseInt(parts[0]); // ID of the user doing the rating
-			int movieID = Integer.parseInt(parts[1]); // ID of the movie being rated
+			Integer currentUserID = Integer.parseInt(parts[0]); // ID of the user doing the rating
+			Integer movieID = Integer.parseInt(parts[1]); // ID of the movie being rated
 			Double rating = Double.parseDouble(parts[3]); // the rating score
 			HashMap<Integer, Movie> likedMovies = new HashMap<>(); // hey Gee Gee: Changed to HashMap
 			HashMap<Integer, Movie> unlikedMovies = new HashMap<>(); // hey Gee Gee: Changed to HashMap
@@ -93,17 +91,18 @@ public class RecommendationEngine {
 			usersDatabase.put(currentUserID, currentUser); // Add the user in the database
 
 			// Add logic to populate the ratings for all movies
-			HashMap<Integer, Double> ratingAndViewer = new HashMap<>();
-			ratingAndViewer.put(currentUserID, rating);
+//			HashMap<Integer, Double> ratingAndViewer = new HashMap<>();
+//			ratingAndViewer.put(currentUserID, rating);
 
 			// hey Gee Gee: Access the movie directly using the HashMap
 			if (moviesDatabase.containsKey(movieID)) {
-				moviesDatabase.get(movieID).getViewersAndRatings().add(ratingAndViewer);
+				moviesDatabase.get(movieID).getViewersAndRatings().put(currentUserID, rating);
 			}
 		}
 	}
 
 	// comment this part before test
+
 	public void findRecommendations(int targetUserID) {
 		// the algorithm to find movies to recommend
 
@@ -126,7 +125,7 @@ public class RecommendationEngine {
 		int commonUnlikedMovies;
 		int bothSeenMovies;
 		int movie_ID;
-		float probability;
+		double probability;
 
 		// hey Gee Gee: Iterate over the HashMap values instead of an ArrayList
 		for (Movie movie : moviesDatabase.values()) {
@@ -172,9 +171,12 @@ public class RecommendationEngine {
 					}
 				}
 			}
+
+			probability = (double) scoreOfUforM / LofM; //probability for movie to be liked by U
+			// store all probabilities with their movie ID and title to later sort and maintain the first N
+			MScoresForU.put(probability, movie);
 		}
-		probability = scoreOfUforM / LofM;
-		// store all probabilities with their movie ID and title to later sort and maintain the first N
+
 	}
 	// end of part to comment
 
@@ -182,13 +184,22 @@ public class RecommendationEngine {
 		try {
 			RecommendationEngine rec = new RecommendationEngine();
 			rec.readMovies(args[1]);
+			rec.readRatings(args[2]);
+
 
 			// hey Gee Gee: Access movies from the HashMap for testing
 			int counter = 0;
-			for (Movie movie : rec.moviesDatabase.values()) {
-				System.out.println(movie.getTitle());
+//			for (Movie movie : rec.MScoresForU.values()) {
+//				System.out.println(movie.getTitle());
+//				if (++counter >= 20) break; // Limit to 20 movies
+//			}
+
+
+			for ( User user : rec.usersDatabase.values()) {
+				System.out.println(user.getUserID());
 				if (++counter >= 20) break; // Limit to 20 movies
 			}
+
 		} catch (Exception e) {
 			System.err.println("Error reading the file: " + e.getMessage());
 		}
