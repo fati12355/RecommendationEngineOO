@@ -2,17 +2,18 @@
 // Winter 2025
 // Robert Laganiere, uottawa.ca
 
-
 import java.io.*;
 import java.util.*;
 
-
 // this is the class that will generate the recommendations for a user
+//For this algorithm I am making the assumption that each seen movie has been rated (liked or unliked)
 
 public class RecommendationEngine {
 
+
+
 	// hey Gee Gee: Changed moviesDatabase from ArrayList to HashMap
-	public HashMap<Integer, Movie> moviesDatabase = new HashMap<>(); // Create a database with all the movies
+	HashMap<Integer, Movie> moviesDatabase = new HashMap<>(); // Create a database with all the movies
 	// Create a HashMap to store users by their ID
 	Map<Integer, User> usersDatabase = new HashMap<>();
 	TreeMap <Double, Movie> MScoresForU = new TreeMap<>(Comparator.reverseOrder()) ; // store the score each movie get for the user U to later sort and recommend the top 20
@@ -47,16 +48,20 @@ public class RecommendationEngine {
 			// hey Gee Gee: Add the movie to the HashMap
 			moviesDatabase.put(movieID, new Movie(movieID, title));
 		}
+		br.close();
 	}
 
 	//this function  has to be rewritten. Check if the user exist and add liked or unliked movie
-	public void readRatings(String csvFile) throws IOException, NumberFormatException {
+	public void readRatings(String csvFile) throws IOException, NumberFormatException { //his function reads the rating
+		//file and populate the viewers and ratings for each movie. It also populate the users Database
 		String line;
 		String delimiter = ","; // Assuming values are separated by commas
 
 		BufferedReader br = new BufferedReader(new FileReader(csvFile));
 		// Read each line from the CSV file
 		line = br.readLine();
+		Double R = 3.5; // rating should be at least 3.5 on a 5 scale to be considered a like
+		Movie currentMovie; //temporary variable to iterate through all the movies
 
 		while ((line = br.readLine()) != null && line.length() > 0) {
 			// Split the line into parts using the delimiter
@@ -68,37 +73,38 @@ public class RecommendationEngine {
 			Integer currentUserID = Integer.parseInt(parts[0]); // ID of the user doing the rating
 			Integer movieID = Integer.parseInt(parts[1]); // ID of the movie being rated
 			Double rating = Double.parseDouble(parts[3]); // the rating score
-			HashMap<Integer, Movie> likedMovies = new HashMap<>(); // hey Gee Gee: Changed to HashMap
-			HashMap<Integer, Movie> unlikedMovies = new HashMap<>(); // hey Gee Gee: Changed to HashMap
-			Double R = 3.5;
-
-			// hey Gee Gee: Check if the rating qualifies as a like
-			if (rating >= R) {
-				// hey Gee Gee: Add the movie to likedMovies using HashMap
-				if (moviesDatabase.containsKey(movieID)) {
-					likedMovies.put(movieID, moviesDatabase.get(movieID));
-					moviesDatabase.get(movieID).incrementLikes(); // Increment likes for the movie
-				}
-			} else {
-				// hey Gee Gee: Add the movie to unlikedMovies using HashMap
-				if (moviesDatabase.containsKey(movieID)) {
-					unlikedMovies.put(movieID, moviesDatabase.get(movieID));
-				}
-			}
-
-			// hey Gee Gee: Update User class to use HashMap for likedMovies and unlikedMovies
-			User currentUser = new User(currentUserID, likedMovies, unlikedMovies);
-			usersDatabase.put(currentUserID, currentUser); // Add the user in the database
+			currentMovie = moviesDatabase.get(movieID);
 
 			// Add logic to populate the ratings for all movies
-//			HashMap<Integer, Double> ratingAndViewer = new HashMap<>();
-//			ratingAndViewer.put(currentUserID, rating);
+			if (currentMovie.getViewersAndRatings() != null){
+				currentMovie.getViewersAndRatings().put(currentUserID, rating);
+			}else{
+				HashMap <Integer, Double> ViewersAndRatings = new HashMap<>();
+				ViewersAndRatings.put(currentUserID, rating);
+				currentMovie.setViewersAndRatings(ViewersAndRatings);
+			}
 
-			// hey Gee Gee: Access the movie directly using the HashMap
-			if (moviesDatabase.containsKey(movieID)) {
-				moviesDatabase.get(movieID).getViewersAndRatings().put(currentUserID, rating);
+			if (usersDatabase.containsKey(currentUserID)){
+				if (rating >=R){
+					usersDatabase.get(currentUserID).getLikedMovies().put(movieID,moviesDatabase.get(movieID));
+					currentMovie.incrementLikes();
+				}else{
+					usersDatabase.get(currentUserID).getUnlikedMovies().put(movieID,moviesDatabase.get(movieID));
+				}
+			}else{
+				HashMap<Integer, Movie> likedMovies = new HashMap<>(); // hey Gee Gee: Changed to HashMap
+				HashMap<Integer, Movie> unlikedMovies = new HashMap<>(); // hey Gee Gee: Changed to HashMap
+				if (rating >=R){
+					likedMovies.put(movieID,moviesDatabase.get(movieID));
+				}else{
+					unlikedMovies.put(movieID,moviesDatabase.get(movieID));
+				}
+				User currentUser = new User(currentUserID, likedMovies, unlikedMovies); //create a new user
+				usersDatabase.put(currentUserID, currentUser); // Add the user in the database
+
 			}
 		}
+		br.close();
 	}
 
 	// comment this part before test
@@ -154,27 +160,29 @@ public class RecommendationEngine {
 							}
 							bothSeenMovies = seenMovies.size();
 							for (Movie V_slikedMovie : V.getLikedMovies().values()){//Complete the union with the movies V saw and not U (those V liked for now)
-								if (! seenMovies.containsKey(V_slikedMovie.getMovieID())){
+								if (! seenMovies.containsKey(V_slikedMovie.getMovieID())){//should not be "!"
 									bothSeenMovies++;
 								}
 							}
 							for (Movie V_sUnlikedMovie : V.getUnlikedMovies().values()){//Complete the union with the movies V saw and not U (those V liked for now)
-								if (! seenMovies.containsKey(V_sUnlikedMovie.getMovieID())){
+								if (! seenMovies.containsKey(V_sUnlikedMovie.getMovieID())){ //should not be "!"
 									bothSeenMovies++;
 								}
 							}
 							sOfUandV= (commonLikedMovies + commonUnlikedMovies) / bothSeenMovies;
-							scoreOfUforM += sOfUandV;
+							scoreOfUforM += sOfUandV; //Update the probability for U to like movie M
+							LofM++;// Take into account the number of users used for better approximation
+							System.out.println(LofM);//just testing
 						}
-						scoreOfUforM += sOfUandV; //Update the probability for U to like movie M
-						LofM++;// Take into account the number of users used for better approximation
+
+						probability = (double) scoreOfUforM / LofM; //probability for movie to be liked by U
+						// store all probabilities with their movie ID and title in a sorted hashmap and maintain the first N
+						MScoresForU.put(probability, movie);
 					}
 				}
 			}
 
-			probability = (double) scoreOfUforM / LofM; //probability for movie to be liked by U
-			// store all probabilities with their movie ID and title to later sort and maintain the first N
-			MScoresForU.put(probability, movie);
+
 		}
 
 	}
@@ -183,22 +191,49 @@ public class RecommendationEngine {
 	public static void main(String[] args) {
 		try {
 			RecommendationEngine rec = new RecommendationEngine();
+			int targetUserID = Integer.parseInt(args[0]);
 			rec.readMovies(args[1]);
 			rec.readRatings(args[2]);
+			rec.findRecommendations(targetUserID);
 
 
-			// hey Gee Gee: Access movies from the HashMap for testing
+			// hey Gee Gee: Print the first 20 movies with the highest probabilities of being liked by the user
 			int counter = 0;
-//			for (Movie movie : rec.MScoresForU.values()) {
-//				System.out.println(movie.getTitle());
+//			for (Map.Entry<Integer, Movie> entry : rec.moviesDatabase.entrySet()) {
+//				System.out.println("movie ID: " + entry.getKey() + " | Movie title: " + entry.getValue().getTitle() +" | likes:" + + entry.getValue().getNumberOfLikes());
+//
+//				if (++counter >= 20) break; // Limit to 20 movies
+//			}
+
+//			for (Movie movie : rec.moviesDatabase.values()) {
+//				System.out.println(movie.getTitle() + "|" + movie.getMovieID());
+//				if (++counter >= 20) break; // Limit to 20 movies
+//			}
+
+//			for (Map.Entry<Integer, User> entry : rec.usersDatabase.entrySet()) {
+//				System.out.println("ID: " + entry.getKey());
+//				HashMap<Integer,Movie> liked = entry.getValue().getLikedMovies();
+//				HashMap<Integer,Movie> unliked = entry.getValue().getLikedMovies();
+//				System.out.println("liked movies");
+//
+//				for (Map.Entry<Integer, Movie> entr : liked.entrySet()) {
+//					System.out.println("Score: " + entr.getKey() + " | Movie: " + entr.getValue().getTitle());
+//				}
+//				System.out.println("unliked movies");
+//
+//				for (Map.Entry<Integer, Movie> ent : unliked.entrySet()) {
+//					System.out.println("Score: " + ent.getKey() + " | Movie: " + ent.getValue().getTitle());
+//				}
+//					if (++counter >= 5) break; // Limit to 20 movies
+//			}
+
+//			for (Map.Entry<Double, Movie> entry : rec.MScoresForU.entrySet()) { // Print the movies we are recommending
+//				System.out.println("Score: " + entry.getKey() + " | Movie: " + entry.getValue().getTitle());
+//
 //				if (++counter >= 20) break; // Limit to 20 movies
 //			}
 
 
-			for ( User user : rec.usersDatabase.values()) {
-				System.out.println(user.getUserID());
-				if (++counter >= 20) break; // Limit to 20 movies
-			}
 
 		} catch (Exception e) {
 			System.err.println("Error reading the file: " + e.getMessage());

@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7efcebf4-442e-4927-84b3-b33579c472a9" name="Changes" comment="Problem finding movie class">
+    <list default="true" id="7efcebf4-442e-4927-84b3-b33579c472a9" name="Changes" comment="Fixed package problem and readMovies working properly">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/RecommendationEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RecommendationEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/README.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/links.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/links.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/movies.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/movies.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/ratings.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/ratings.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ml-latest-small/tags.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ml-latest-small/tags.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/RecommendationEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RecommendationEngine.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +125,14 @@
       <option name="project" value="LOCAL" />
       <updated>1737694909767</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Fixed package problem and readMovies working properly">
+      <created>1738642048417</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1738642048417</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -141,6 +143,7 @@
     <MESSAGE value="Changed all the arrayList to hashmap to increase efficiency and simplify search in the database" />
     <MESSAGE value="Added the complete logic to compute the probability for each movie to be liked by user U" />
     <MESSAGE value="Problem finding movie class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Problem finding movie class" />
+    <MESSAGE value="Fixed package problem and readMovies working properly" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed package problem and readMovies working properly" />
   </component>
 </project>
