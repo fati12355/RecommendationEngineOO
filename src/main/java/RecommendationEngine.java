@@ -1,7 +1,12 @@
 // Project CSI2120/CSI2520
 // Winter 2025
 // Robert Laganiere, uottawa.ca
-//tree map doesn't accept duplicate key. Use another data structure
+
+// Name: Fatimata Abdou Dramane
+// Student number: 300277601
+
+
+
 import java.io.*;
 import java.util.*;
 
@@ -50,6 +55,14 @@ public class RecommendationEngine {
 			moviesDatabase.put(movieID, new Movie(movieID, title));
 		}
 		br.close();
+
+//		int counter = 0; // printing the data in moviesDatabase to ensure it's populated correctly
+
+
+//		for (Map.Entry<Integer, Movie> entry : moviesDatabase.entrySet()) { // Print the movies we are recommending
+//			System.out.println("ID: " + entry.getKey() + " | Title: " + entry.getValue().getTitle());
+//			if (++counter >= 1000) break; // Limit to 1000 movies
+//		}
 	}
 
 	public void readRatings(String csvFile) throws IOException, NumberFormatException { //his function reads the rating
@@ -113,8 +126,8 @@ public class RecommendationEngine {
 		// the algorithm to find movies to recommend
 
 		User U = usersDatabase.get(targetUserID);
-		HashMap<Integer, Movie> seenMovies = U.getLikedMovies(); // hey Gee Gee: Updated to HashMap
-		HashMap<Integer, Movie> unLikedMoviesToAdd = U.getUnlikedMovies(); // hey Gee Gee: Updated to HashMap
+		HashMap<Integer, Movie> seenMovies = U.getLikedMovies(); // hey Gee Gee: Use HashMap
+		HashMap<Integer, Movie> unLikedMoviesToAdd = U.getUnlikedMovies(); // hey Gee Gee: Use HashMap
 		Movie dBsMovie;
 		int K = 10; // A movie should have been viewed by at least K users to be used for recommendation
 
@@ -164,7 +177,7 @@ public class RecommendationEngine {
 									bothSeenMovies++;
 								}
 							}
-							for (Movie V_sUnlikedMovie : V.getUnlikedMovies().values()){//Complete the union with the movies V saw and not U (those V liked for now)
+							for (Movie V_sUnlikedMovie : V.getUnlikedMovies().values()){//Complete the union with the movies V saw and not U (those V unliked now)
 								if (! seenMovies.containsKey(V_sUnlikedMovie.getMovieID())){
 									bothSeenMovies++;
 								}
@@ -179,13 +192,13 @@ public class RecommendationEngine {
 //							System.out.print("LofM"+LofM);//just testing
 						}
 					}
+					probability =  (LofM != 0) ? scoreOfUforM / ((float)LofM):0f; //probability for movie to be liked by U (LofM should always be non-zero)
+//					//System.out.println("probability"+probability);//just testing
+
+					// store all probabilities with their movie ID and title in a sorted hashmap and maintain the first N
+					MScoresForU.put(movie,probability);
 				}
 			}
-			probability =  (LofM != 0) ? scoreOfUforM / ((float)LofM):0f; //probability for movie to be liked by U (assuming LofM is always non-zero)
-//			System.out.println("probability"+probability);//just testing
-
-			// store all probabilities with their movie ID and title in a sorted hashmap and maintain the first N
-			MScoresForU.put(movie,probability);
 		}
 
 	}
@@ -198,15 +211,25 @@ public class RecommendationEngine {
 			rec.readMovies(args[1]);
 			rec.readRatings(args[2]);
 			rec.findRecommendations(targetUserID);
+			String output;
 			List<HashMap.Entry<Movie, Float>> recommendableMovies = new ArrayList<>(rec.MScoresForU.entrySet());
 			recommendableMovies.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
-			// hey Gee Gee: Print the first 20 movies with the highest probabilities of being liked by the user
-			int counter = 0;
+			PrintWriter writer = new PrintWriter(new FileWriter("src/output/results.txt"));//text file to store the recommended movies
+			writer.println("Recommendations for user " + targetUserID + ":");
+			writer.println();
+			int counter = 0; // printing the data in moviesDatabase to ensure it's populated correctly
 			for (Map.Entry<Movie, Float> entry : recommendableMovies) { // Print the movies we are recommending
-				System.out.println("Probability: " + entry.getValue() + " | Movie: " + entry.getKey().getTitle());
+				output = "Probability: " + entry.getValue() + " | Movie " + (counter + 1) + ": " + entry.getKey().getTitle();
+				System.out.println(output);
+				writer.println (output);
 				if (++counter >= 20) break; // Limit to 20 movies
 			}
+
+			writer.close();
+
+//			 hey Gee Gee: Print the first 20 movies with the highest probabilities of being liked by the user
+
 
 
 
